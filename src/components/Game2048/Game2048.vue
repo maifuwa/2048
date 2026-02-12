@@ -50,15 +50,9 @@ function onPointerUp(e: PointerEvent) {
   <section class="game">
     <GameHeader :score="game.score.value" :best="game.best.value" @new-game="game.newGame" />
 
-    <p class="subtitle">
-      合并相同数字，得到 <strong>2048</strong>。
-      <span class="subtitle-hint">键盘方向键/WASD，或滑动操作。</span>
-    </p>
-
     <div
       ref="board"
       class="board-wrap"
-      :class="{ 'board-wrap-overlay': isOverlayVisible }"
       role="application"
       aria-label="2048 game board"
       @pointerdown="onPointerDown"
@@ -67,47 +61,40 @@ function onPointerUp(e: PointerEvent) {
     >
       <GameBoard :size="game.state.value.size" :tiles="game.tiles.value" />
 
-      <div v-if="game.status.value !== 'playing'" class="overlay" aria-live="polite">
+      <div v-if="game.status.value === 'lost'" class="overlay" aria-live="polite">
         <div class="overlay-card">
           <p class="overlay-title">
-            {{ game.status.value === 'won' ? 'You win!' : 'Game over!' }}
+            You Lose
+          </p>
+          <button class="btn" type="button" @click="game.newGame">Play Again</button>
+        </div>
+      </div>
+
+      <div v-if="game.status.value === 'won'" class="overlay" aria-live="polite">
+        <div class="overlay-card">
+          <p class="overlay-title">
+            You Won!
           </p>
           <div class="overlay-actions">
-            <button class="btn" type="button" @click="game.newGame">Try again</button>
             <button
-              v-if="game.status.value === 'won' && !game.keepPlayingEnabled.value"
+              v-if="!game.keepPlayingEnabled.value"
               class="btn btn-secondary"
               type="button"
               @click="game.keepPlaying"
             >
-              Keep going
+              Continue
             </button>
+            <button class="btn" type="button" @click="game.newGame">Play Again</button>
           </div>
         </div>
       </div>
     </div>
-
-    <p class="meta">
-      <span class="meta-strong">规则</span>：每次滑动后会随机生成一个新数字。相同数字相撞会合并并加分。
-    </p>
   </section>
 </template>
 
 <style scoped>
 .game {
-  width: min(520px, 100%);
-}
-
-.subtitle {
-  margin: 0 0 14px;
-  color: var(--muted-text);
-  font-size: 16px;
-}
-
-.subtitle-hint {
-  display: inline-block;
-  margin-left: 6px;
-  opacity: 0.85;
+  width: min(600px, 100%);
 }
 
 .board-wrap {
@@ -123,7 +110,8 @@ function onPointerUp(e: PointerEvent) {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(238, 228, 218, 0.73);
+  background: rgba(47, 47, 47, 0.85);
+  z-index: 10;
 }
 
 .overlay-card {
@@ -132,9 +120,9 @@ function onPointerUp(e: PointerEvent) {
 }
 
 .overlay-title {
-  margin: 0 0 12px;
-  font-size: 44px;
-  font-weight: 700;
+  margin: 0 0 16px;
+  font-size: 48px;
+  font-weight: 900;
   color: var(--text);
 }
 
@@ -150,10 +138,14 @@ function onPointerUp(e: PointerEvent) {
   cursor: pointer;
   background: var(--btn-bg);
   color: var(--btn-text);
-  padding: 10px 14px;
+  padding: 10px 16px;
   border-radius: 3px;
   font-weight: 700;
   font-size: 16px;
+}
+
+.btn:hover {
+  opacity: 0.9;
 }
 
 .btn:active {
@@ -161,17 +153,8 @@ function onPointerUp(e: PointerEvent) {
 }
 
 .btn-secondary {
-  background: #6b5b4a;
-}
-
-.meta {
-  margin: 16px 0 0;
-  color: var(--muted-text);
-  font-size: 14px;
-}
-
-.meta-strong {
-  font-weight: 800;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text);
 }
 </style>
 

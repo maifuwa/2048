@@ -1,32 +1,35 @@
 import type { GameSnapshot } from './types'
 
-const SNAPSHOT_KEY = '2048:snapshot:v1'
+const BEST_SCORE_KEY = '2048:best:v1'
 
 export function loadSnapshot(): GameSnapshot | null {
-  try {
-    const raw = localStorage.getItem(SNAPSHOT_KEY)
-    if (!raw) return null
-    const data = JSON.parse(raw) as unknown
-    if (!isSnapshot(data)) return null
-    return data
-  } catch {
-    return null
-  }
+  return null // Always return null to start fresh game
 }
 
 export function saveSnapshot(snapshot: GameSnapshot) {
+  // Only save the best score
   try {
-    localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(snapshot))
+    const currentBest = loadBestScore()
+    if (snapshot.best > currentBest) {
+      localStorage.setItem(BEST_SCORE_KEY, String(snapshot.best))
+    }
   } catch {
-    // ignore storage failures (private mode, quota, etc.)
+    // ignore storage failures
   }
 }
 
 export function clearSnapshot() {
+  // Keep best score, don't clear it
+}
+
+export function loadBestScore(): number {
   try {
-    localStorage.removeItem(SNAPSHOT_KEY)
+    const raw = localStorage.getItem(BEST_SCORE_KEY)
+    if (!raw) return 0
+    const best = Number.parseInt(raw, 10)
+    return Number.isNaN(best) ? 0 : best
   } catch {
-    // ignore
+    return 0
   }
 }
 

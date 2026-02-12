@@ -1,5 +1,7 @@
 <script setup lang="ts">
-defineProps<{
+import { computed } from 'vue'
+
+const props = defineProps<{
   score: number
   best: number
 }>()
@@ -7,26 +9,36 @@ defineProps<{
 const emit = defineEmits<{
   newGame: []
 }>()
+
+// Smooth score transition
+const displayScore = computed(() => props.score)
 </script>
 
 <template>
   <header class="header">
-    <div class="title">
-      <h1 class="title-text">2048</h1>
+    <div class="left">
+      <div class="score-display">
+        {{ displayScore }}
+      </div>
+      <div class="score-label">
+        Score
+      </div>
+      <div class="subtitle">
+        Join the tiles, get to 2048!
+      </div>
     </div>
 
+    <div class="spacer" />
+
     <div class="right">
-      <div class="scores" aria-label="scores">
-        <div class="score-box" aria-label="score">
-          <div class="score-label">SCORE</div>
-          <div class="score-value">{{ score }}</div>
+      <div class="best-box">
+        <div class="best-value">
+          {{ best }}
         </div>
-        <div class="score-box" aria-label="best score">
-          <div class="score-label">BEST</div>
-          <div class="score-value">{{ best }}</div>
+        <div class="best-label">
+          High Score
         </div>
       </div>
-
       <button class="new-game" type="button" @click="emit('newGame')">New Game</button>
     </div>
   </header>
@@ -36,16 +48,44 @@ const emit = defineEmits<{
 .header {
   display: flex;
   align-items: flex-end;
-  justify-content: space-between;
   gap: 12px;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
+  max-width: 600px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.title-text {
-  margin: 0;
+.left {
+  text-align: left;
+  align-self: flex-end;
+  flex: 1;
+}
+
+.score-display {
   font-size: 80px;
-  letter-spacing: -1px;
+  font-weight: 900;
+  font-family: 'Courier New', monospace;
+  color: rgba(255, 255, 255, 0.9);
   line-height: 1;
+  letter-spacing: -2px;
+}
+
+.score-label {
+  font-size: 30px;
+  font-family: 'Courier New', monospace;
+  opacity: 0.5;
+  margin-top: 4px;
+}
+
+.subtitle {
+  opacity: 0.5;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.spacer {
+  display: none;
 }
 
 .right {
@@ -53,33 +93,23 @@ const emit = defineEmits<{
   flex-direction: column;
   align-items: flex-end;
   gap: 10px;
+  min-width: fit-content;
 }
 
-.scores {
-  display: flex;
-  gap: 8px;
+.best-box {
+  text-align: right;
+  opacity: 0.5;
+  font-weight: 500;
+  font-family: 'Courier New', monospace;
 }
 
-.score-box {
-  min-width: 92px;
-  padding: 10px 12px 8px;
-  border-radius: 3px;
-  background: var(--board-bg);
-  color: #fff;
-  text-align: center;
+.best-value {
+  font-size: 30px;
 }
 
-.score-label {
-  font-size: 12px;
-  font-weight: 800;
-  opacity: 0.85;
-  letter-spacing: 0.3px;
-}
-
-.score-value {
-  font-size: 22px;
-  font-weight: 800;
-  margin-top: 2px;
+.best-label {
+  font-size: 16px;
+  opacity: 0.7;
 }
 
 .new-game {
@@ -87,10 +117,14 @@ const emit = defineEmits<{
   cursor: pointer;
   background: var(--btn-bg);
   color: var(--btn-text);
-  padding: 10px 12px;
+  padding: 10px 16px;
   border-radius: 3px;
   font-weight: 800;
   font-size: 16px;
+}
+
+.new-game:hover {
+  opacity: 0.9;
 }
 
 .new-game:active {
@@ -98,11 +132,14 @@ const emit = defineEmits<{
 }
 
 @media (max-width: 520px) {
-  .title-text {
+  .score-display {
     font-size: 64px;
   }
-  .score-box {
-    min-width: 84px;
+  .score-label {
+    font-size: 24px;
+  }
+  .best-value {
+    font-size: 24px;
   }
 }
 </style>

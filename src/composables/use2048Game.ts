@@ -2,7 +2,7 @@ import { computed, onMounted, onUnmounted, shallowRef, watch } from 'vue'
 import { clearTransientFlags, createNewGame, fromSnapshot, move, setKeepPlaying, toSnapshot } from '../game/engine'
 import type { Direction } from '../game/types'
 import type { GameState } from '../game/state'
-import { loadSnapshot, saveSnapshot } from '../game/storage'
+import { loadBestScore, saveSnapshot } from '../game/storage'
 
 export interface Use2048GameOptions {
   size?: number
@@ -64,13 +64,9 @@ export function use2048Game(options: Use2048GameOptions = {}) {
   }
 
   onMounted(() => {
-    const snap = loadSnapshot()
-    if (snap && snap.size === size) {
-      state.value = fromSnapshot(snap)
-    } else {
-      state.value = createNewGame(size, 0, rng)
-    }
-
+    // Load best score from localStorage, start fresh game
+    const bestScore = loadBestScore()
+    state.value = createNewGame(size, bestScore, rng)
     window.addEventListener('keydown', handleKeydown, { passive: false })
   })
 
@@ -79,6 +75,7 @@ export function use2048Game(options: Use2048GameOptions = {}) {
     if (clearFlagsRaf != null) cancelAnimationFrame(clearFlagsRaf)
   })
 
+  // Save best score to localStorage
   watch(
     state,
     (s) => {

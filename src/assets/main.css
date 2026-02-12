@@ -1,24 +1,24 @@
 /* Global styles and tokens for the 2048 UI. */
 
 :root {
-  --page-bg: #faf8ef;
-  --text: #776e65;
-  --muted-text: #8f7a66;
+  --page-bg: #242424;
+  --text: rgba(255, 255, 255, 0.87);
+  --muted-text: rgba(255, 255, 255, 0.6);
 
-  --board-bg: #bbada0;
-  --cell-bg: rgba(238, 228, 218, 0.35);
-  --btn-bg: #8f7a66;
-  --btn-text: #f9f6f2;
+  --board-bg: #2f2f2f;
+  --cell-bg: rgba(72, 72, 72, 0.5);
+  --btn-bg: #40b883;
+  --btn-text: #34495e;
 
-  --gap: 15px;
-  --cell: 106px;
-  --radius: 6px;
+  --gap: 16px;
+  --cell: 130px;
+  --radius: 8px;
 }
 
 @media (max-width: 520px) {
   :root {
-    --gap: 12px;
-    --cell: 74px;
+    --gap: 11px;
+    --cell: 75px;
   }
 }
 

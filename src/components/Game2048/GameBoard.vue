@@ -64,6 +64,7 @@ onUnmounted(() => {
   padding: var(--gap);
   position: relative;
   user-select: none;
+  aspect-ratio: 1;
 }
 
 .grid {
@@ -81,6 +82,7 @@ onUnmounted(() => {
 .tile-layer {
   position: absolute;
   inset: 0;
+  pointer-events: none;
 }
 </style>
 

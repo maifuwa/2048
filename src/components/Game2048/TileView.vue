@@ -16,8 +16,31 @@ const digitClass = computed(() => {
 
 const valueClass = computed(() => {
   const v = props.tile.value
-  return v <= 2048 ? `tile-${v}` : 'tile-super'
+  if (v <= 16384) return `tile-${v}`
+  return 'tile-super'
 })
+
+const tileColor = computed(() => {
+  const colors: Record<number, [string, string]> = {
+    2: ['#f16528', 'white'],
+    4: ['#edd51e', 'black'],
+    8: ['#3592cb', 'white'],
+    16: ['#f23901', 'white'],
+    32: ['#61dafb', '#13252a'],
+    64: ['#4f82bf', 'white'],
+    128: ['#ff4556', 'white'],
+    256: ['#0963a3', 'white'],
+    512: ['rgb(255 208 40)', '#261f08'],
+    1024: ['rgb(99 108 255)', '#fff'],
+    2048: ['#40b883', '#34495e'],
+    4096: ['#cb3837', 'white'],
+    8192: ['#509640', 'white'],
+    16384: ['#2f71ba', 'white'],
+  }
+  return colors[props.tile.value] || ['white', 'black']
+})
+
+const hasGlow = computed(() => props.tile.value >= 64)
 </script>
 
 <template>
@@ -29,8 +52,16 @@ const valueClass = computed(() => {
       { 'tile-spawn': props.tile.justSpawned, 'tile-merge': props.tile.justMerged },
     ]"
     :data-value="props.tile.value"
+    :style="{
+      'background-color': tileColor[0],
+      'color': tileColor[1],
+      'box-shadow': hasGlow ? `0 0 10px 0px ${tileColor[0]}` : 'none',
+    }"
   >
-    <div class="tile-inner">
+    <div
+      class="tile-inner"
+      :class="{ 'tile-border': props.tile.value }"
+    >
       <span class="tile-text">{{ props.tile.value }}</span>
     </div>
   </div>
@@ -49,7 +80,7 @@ const valueClass = computed(() => {
   justify-content: center;
   font-weight: 800;
   line-height: 1;
-  transition: transform 120ms ease-in-out;
+  transition: transform 100ms ease-in-out;
   will-change: transform;
 }
 
@@ -60,7 +91,12 @@ const valueClass = computed(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+  position: relative;
+}
+
+.tile-border {
+  border-bottom: 4px solid rgba(0, 0, 0, 0.1);
+  border-right: 4px solid rgba(255, 255, 255, 0.2);
 }
 
 .tile-text {
@@ -94,62 +130,6 @@ const valueClass = computed(() => {
   100% {
     transform: scale(1);
   }
-}
-
-.tile-2,
-.tile-4 {
-  color: var(--text);
-}
-
-.tile-8,
-.tile-16,
-.tile-32,
-.tile-64,
-.tile-128,
-.tile-256,
-.tile-512,
-.tile-1024,
-.tile-2048,
-.tile-super {
-  color: #f9f6f2;
-}
-
-.tile-2 {
-  background: #eee4da;
-}
-.tile-4 {
-  background: #ede0c8;
-}
-.tile-8 {
-  background: #f2b179;
-}
-.tile-16 {
-  background: #f59563;
-}
-.tile-32 {
-  background: #f67c5f;
-}
-.tile-64 {
-  background: #f65e3b;
-}
-.tile-128 {
-  background: #edcf72;
-}
-.tile-256 {
-  background: #edcc61;
-}
-.tile-512 {
-  background: #edc850;
-}
-.tile-1024 {
-  background: #edc53f;
-}
-.tile-2048 {
-  background: #edc22e;
-}
-
-.tile-super {
-  background: #3c3a32;
 }
 
 .tile-2d {
