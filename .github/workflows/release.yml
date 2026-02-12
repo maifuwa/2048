@@ -4,13 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version (e.g., v1.0.0)'
-        required: true
+        description: 'Release version (e.g., v1.0.0). If empty, uses version from package.json'
+        required: false
         type: string
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
@@ -21,6 +23,16 @@ jobs:
         with:
           bun-version: latest
 
+      - name: Get Version
+        id: get_version
+        run: |
+          if [ -z "${{ github.event.inputs.version }}" ]; then
+            VERSION=$(jq -r .version package.json)
+            echo "VERSION=v$VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          fi
+
       - name: Install dependencies
         run: bun install
 
@@ -30,17 +42,17 @@ jobs:
       - name: Create release archive
         run: |
           cd dist
-          zip -r ../2048-${{ inputs.version }}.zip .
+          zip -r ../dist.zip .
           cd ..
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ inputs.version }}
-          name: Release ${{ inputs.version }}
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          name: Release ${{ steps.get_version.outputs.VERSION }}
           draft: false
           prerelease: false
           files: |
-            2048-${{ inputs.version }}.zip
+            dist.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
