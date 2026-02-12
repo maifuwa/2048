@@ -1,0 +1,71 @@
+/* Global styles and tokens for the 2048 UI. */
+
+:root {
+  --page-bg: #faf8ef;
+  --text: #776e65;
+  --muted-text: #8f7a66;
+
+  --board-bg: #bbada0;
+  --cell-bg: rgba(238, 228, 218, 0.35);
+  --btn-bg: #8f7a66;
+  --btn-text: #f9f6f2;
+
+  --gap: 15px;
+  --cell: 106px;
+  --radius: 6px;
+}
+
+@media (max-width: 520px) {
+  :root {
+    --gap: 12px;
+    --cell: 74px;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--text);
+  font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.2;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
