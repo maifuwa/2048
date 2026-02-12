@@ -1,6 +1,6 @@
-<script setup lang="ts">
-import { computed } from 'vue'
-import type { Tile } from '../../game/types'
+<script lang="ts" setup>
+import {computed} from 'vue'
+import type {Tile} from '@/game/types.ts'
 
 const props = defineProps<{
   tile: Tile
@@ -45,22 +45,22 @@ const hasGlow = computed(() => props.tile.value >= 64)
 
 <template>
   <div
-    class="tile"
-    :class="[
+      :class="[
       valueClass,
       digitClass,
       { 'tile-spawn': props.tile.justSpawned, 'tile-merge': props.tile.justMerged },
     ]"
-    :data-value="props.tile.value"
-    :style="{
+      :data-value="props.tile.value"
+      :style="{
       'background-color': tileColor[0],
       'color': tileColor[1],
       'box-shadow': hasGlow ? `0 0 10px 0px ${tileColor[0]}` : 'none',
     }"
+      class="tile"
   >
     <div
-      class="tile-inner"
-      :class="{ 'tile-border': props.tile.value }"
+        :class="{ 'tile-border': props.tile.value }"
+        class="tile-inner"
     >
       <span class="tile-text">{{ props.tile.value }}</span>
     </div>
@@ -133,30 +133,18 @@ const hasGlow = computed(() => props.tile.value >= 64)
 }
 
 .tile-2d {
-  font-size: 52px;
-}
-.tile-3d {
-  font-size: 44px;
-}
-.tile-4d {
-  font-size: 36px;
-}
-.tile-5d {
-  font-size: 28px;
+  font-size: calc(var(--cell) * 0.42);
 }
 
-@media (max-width: 520px) {
-  .tile-2d {
-    font-size: 44px;
-  }
-  .tile-3d {
-    font-size: 36px;
-  }
-  .tile-4d {
-    font-size: 28px;
-  }
-  .tile-5d {
-    font-size: 22px;
-  }
+.tile-3d {
+  font-size: calc(var(--cell) * 0.34);
+}
+
+.tile-4d {
+  font-size: calc(var(--cell) * 0.28);
+}
+
+.tile-5d {
+  font-size: calc(var(--cell) * 0.22);
 }
 </style>

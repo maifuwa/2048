@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { computed } from 'vue'
+<script lang="ts" setup>
+import {computed} from 'vue'
 
 const props = defineProps<{
   score: number
@@ -16,21 +16,16 @@ const displayScore = computed(() => props.score)
 
 <template>
   <header class="header">
-    <div class="left">
+    <div class="score">
       <div class="score-display">
         {{ displayScore }}
       </div>
       <div class="score-label">
         Score
       </div>
-      <div class="subtitle">
-        Join the tiles, get to 2048!
-      </div>
     </div>
 
-    <div class="spacer" />
-
-    <div class="right">
+    <div class="actions">
       <div class="best-box">
         <div class="best-value">
           {{ best }}
@@ -41,29 +36,32 @@ const displayScore = computed(() => props.score)
       </div>
       <button class="new-game" type="button" @click="emit('newGame')">New Game</button>
     </div>
+
+    <div class="subtitle">
+      Join the tiles, get to 2048!
+    </div>
   </header>
 </template>
 
 <style scoped>
 .header {
-  display: flex;
-  align-items: flex-end;
-  gap: 12px;
-  margin-bottom: 16px;
-  max-width: 600px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "score actions"
+    "subtitle actions";
+  gap: 10px 14px;
+  align-items: end;
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
 }
 
-.left {
+.score {
+  grid-area: score;
   text-align: left;
-  align-self: flex-end;
-  flex: 1;
 }
 
 .score-display {
-  font-size: 80px;
+  font-size: clamp(56px, 10vw, 80px);
   font-weight: 900;
   font-family: 'Courier New', monospace;
   color: rgba(255, 255, 255, 0.9);
@@ -72,28 +70,24 @@ const displayScore = computed(() => props.score)
 }
 
 .score-label {
-  font-size: 30px;
+  font-size: clamp(20px, 4.3vw, 30px);
   font-family: 'Courier New', monospace;
   opacity: 0.5;
   margin-top: 4px;
 }
 
 .subtitle {
+  grid-area: subtitle;
   opacity: 0.5;
   font-size: 14px;
-  margin-top: 4px;
+  line-height: 1.3;
 }
 
-.spacer {
-  display: none;
-}
-
-.right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+.actions {
+  grid-area: actions;
+  display: grid;
   gap: 10px;
-  min-width: fit-content;
+  justify-items: end;
 }
 
 .best-box {
@@ -131,16 +125,28 @@ const displayScore = computed(() => props.score)
   transform: translateY(1px);
 }
 
-@media (max-width: 520px) {
-  .score-display {
-    font-size: 64px;
+@media (max-width: 420px) {
+  .header {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "score"
+      "actions"
+      "subtitle";
   }
-  .score-label {
-    font-size: 24px;
+
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
   }
+
+  .best-box {
+    text-align: left;
+  }
+
   .best-value {
     font-size: 24px;
   }
 }
 </style>
-

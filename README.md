@@ -43,12 +43,15 @@ bun run preview
 
 ## 使用的方法（实现要点）
 
-- 状态模型：使用 `tiles: Tile[]` 表示棋盘（每个 tile 含 `row/col/value/id`），配合 `Map<"row,col", Tile>` 做位置索引（`src/game/engine.ts`）。
+- 状态模型：使用 `tiles: Tile[]` 表示棋盘（每个 tile 含 `row/col/value/id`），配合 `Map<"row,col", Tile>` 做位置索引（
+  `src/game/engine.ts`）。
 - 移动与合并：按方向将棋盘拆成若干条“线”（行/列，必要时反向遍历），逐格扫描并压缩到目标位置（`getLines`）。
-- 合并规则：相邻且数值相同的 tile 在同一次移动中只合并一次（用 `prevMerged` 防止连续二次合并）；合并会生成新 tile（新 `id`，打上 `justMerged` 标记）并累计得分（`move`）。
+- 合并规则：相邻且数值相同的 tile 在同一次移动中只合并一次（用 `prevMerged` 防止连续二次合并）；合并会生成新 tile（新 `id`，打上
+  `justMerged` 标记）并累计得分（`move`）。
 - 随机生成：每次有效移动后在空位随机生成新 tile，`90%` 概率为 `2`，`10%` 为 `4`（`spawnRandomTile`）。
 - 胜负判定：达到 `2048` 进入 `won`（未开启继续时）；无空位且相邻无法合并则 `lost`（`canMove`）。
-- 动画/过渡标记：生成与合并会打上 `justSpawned/justMerged`，在下一帧用 `requestAnimationFrame` 清除，便于 CSS 动画触发（`src/composables/use2048Game.ts`、`src/components/Game2048/TileView.vue`）。
+- 动画/过渡标记：生成与合并会打上 `justSpawned/justMerged`，在下一帧用 `requestAnimationFrame` 清除，便于 CSS 动画触发（
+  `src/composables/use2048Game.ts`、`src/components/Game2048/TileView.vue`）。
 - 持久化：仅持久化最高分到 `localStorage`（`src/game/storage.ts`）。
 
 ## 目录结构
