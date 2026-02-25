@@ -41,7 +41,7 @@ export function useGame(options: UseGameOptions = {}) {
   }
 
   function newGame() {
-    state.value = createNewGame(size, state.value.best, rng)
+    state.value = createNewGame(size, state.value.best, rng, state.value.nextTileId)
     scheduleClearFlags()
   }
 
@@ -65,7 +65,7 @@ export function useGame(options: UseGameOptions = {}) {
 
   onMounted(() => {
     const bestScore = loadBestScore()
-    state.value = createNewGame(size, bestScore, rng)
+    state.value = createNewGame(size, bestScore, rng, state.value.nextTileId)
     window.addEventListener('keydown', handleKeydown, {passive: false})
   })
 

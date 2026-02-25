@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {onMounted, onUnmounted, useTemplateRef} from 'vue'
+import {computed, onMounted, onUnmounted, useTemplateRef} from 'vue'
 import type {Tile} from '@/game/types'
 import TileComponent from './Tile.vue'
 
@@ -9,6 +9,7 @@ const props = defineProps<{
 }>()
 
 const boardEl = useTemplateRef<HTMLDivElement>('boardEl')
+const hasMergedTile = computed(() => props.tiles.some((tile) => tile.justMerged))
 let ro: ResizeObserver | null = null
 
 function clamp(n: number, min: number, max: number) {
@@ -58,7 +59,12 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div ref="boardEl" :style="{ '--size': String(props.size) }" class="board">
+  <div
+    ref="boardEl"
+    :class="{ 'board-merge-active': hasMergedTile }"
+    :style="{ '--size': String(props.size) }"
+    class="board"
+  >
     <div aria-hidden="true" class="grid">
       <div v-for="n in props.size * props.size" :key="n" class="cell"/>
     </div>
@@ -74,6 +80,7 @@ onUnmounted(() => {
   --size: 4;
   --gap: 16px;
   --cell: 130px;
+  --slide-duration: 100ms;
   width: min(100%, 600px, 92vmin);
   margin: 0 auto;
   background: var(--board-bg);
@@ -82,6 +89,10 @@ onUnmounted(() => {
   position: relative;
   user-select: none;
   aspect-ratio: 1;
+}
+
+.board-merge-active {
+  --slide-duration: 180ms;
 }
 
 .grid {

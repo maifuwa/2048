@@ -11,9 +11,24 @@ interface UseSwipeDirectionOptions {
   threshold?: number
 }
 
+const INTERACTIVE_TARGET_SELECTOR = [
+  'button',
+  'a',
+  'input',
+  'textarea',
+  'select',
+  'label',
+  '[role="button"]',
+].join(', ')
+
 export function useSwipe(options: UseSwipeDirectionOptions) {
   const threshold = options.threshold ?? 26
   let drag: SwipeDrag | null = null
+
+  function isInteractiveTarget(target: EventTarget | null) {
+    if (!(target instanceof Element)) return false
+    return target.closest(INTERACTIVE_TARGET_SELECTOR) !== null
+  }
 
   function directionFromDelta(dx: number, dy: number): Direction | null {
     const absX = Math.abs(dx)
@@ -24,6 +39,11 @@ export function useSwipe(options: UseSwipeDirectionOptions) {
   }
 
   function onPointerDown(event: PointerEvent) {
+    if (isInteractiveTarget(event.target)) {
+      drag = null
+      return
+    }
+
     const target = event.currentTarget as HTMLElement | null
     target?.setPointerCapture?.(event.pointerId)
     drag = {

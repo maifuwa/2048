@@ -75,7 +75,7 @@ const hasGlow = computed(() => props.tile.value >= 64)
   justify-content: center;
   font-weight: 800;
   line-height: 1;
-  transition: transform 180ms ease-in-out;
+  transition: transform var(--slide-duration, 100ms) ease-in-out;
   will-change: transform;
 }
 

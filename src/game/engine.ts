@@ -16,14 +16,15 @@ function pickRandom<T>(arr: T[], rng: Rng): T | undefined {
     return arr[idx]
 }
 
-export function createNewGame(size: number, best: number, rng: Rng): GameState {
+// Keep tile ids monotonic across games when desired, so Vue keys do not get reused on restart.
+export function createNewGame(size: number, best: number, rng: Rng, nextTileIdStart = 1): GameState {
     let state: GameState = {
         size,
         score: 0,
         best,
         status: 'playing',
         keepPlaying: false,
-        nextTileId: 1,
+        nextTileId: nextTileIdStart,
         tiles: [],
     }
 
