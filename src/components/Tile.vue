@@ -20,7 +20,7 @@ const TILE_COLORS: Record<number, [string, string]> = {
 }
 
 const props = defineProps<{
-  tile: Tile
+  tile: Readonly<Tile>
 }>()
 
 const digitClass = computed(() => {

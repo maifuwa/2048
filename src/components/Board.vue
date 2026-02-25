@@ -5,7 +5,7 @@ import TileComponent from './Tile.vue'
 
 const props = defineProps<{
   size: number
-  tiles: Tile[]
+  tiles: ReadonlyArray<Readonly<Tile>>
 }>()
 
 const boardEl = useTemplateRef<HTMLDivElement>('boardEl')
@@ -37,7 +37,7 @@ function readMetrics() {
   boardEl.value.style.setProperty('--gap', `${gapPx}px`)
 }
 
-function tileStyle(t: Tile) {
+function tileStyle(t: Readonly<Tile>) {
   return {
     '--tile-col': String(t.col),
     '--tile-row': String(t.row),
