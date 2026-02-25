@@ -1,6 +1,23 @@
 <script lang="ts" setup>
 import {computed} from 'vue'
-import type {Tile} from '@/game/types.ts'
+import type {Tile} from '@/game/types'
+
+const TILE_COLORS: Record<number, [string, string]> = {
+  2: ['#f16528', 'white'],
+  4: ['#edd51e', 'black'],
+  8: ['#3592cb', 'white'],
+  16: ['#f23901', 'white'],
+  32: ['#61dafb', '#13252a'],
+  64: ['#4f82bf', 'white'],
+  128: ['#ff4556', 'white'],
+  256: ['#0963a3', 'white'],
+  512: ['rgb(255 208 40)', '#261f08'],
+  1024: ['rgb(99 108 255)', '#fff'],
+  2048: ['#40b883', '#34495e'],
+  4096: ['#cb3837', 'white'],
+  8192: ['#509640', 'white'],
+  16384: ['#2f71ba', 'white'],
+}
 
 const props = defineProps<{
   tile: Tile
@@ -14,30 +31,8 @@ const digitClass = computed(() => {
   return 'tile-5d'
 })
 
-const valueClass = computed(() => {
-  const v = props.tile.value
-  if (v <= 16384) return `tile-${v}`
-  return 'tile-super'
-})
-
 const tileColor = computed(() => {
-  const colors: Record<number, [string, string]> = {
-    2: ['#f16528', 'white'],
-    4: ['#edd51e', 'black'],
-    8: ['#3592cb', 'white'],
-    16: ['#f23901', 'white'],
-    32: ['#61dafb', '#13252a'],
-    64: ['#4f82bf', 'white'],
-    128: ['#ff4556', 'white'],
-    256: ['#0963a3', 'white'],
-    512: ['rgb(255 208 40)', '#261f08'],
-    1024: ['rgb(99 108 255)', '#fff'],
-    2048: ['#40b883', '#34495e'],
-    4096: ['#cb3837', 'white'],
-    8192: ['#509640', 'white'],
-    16384: ['#2f71ba', 'white'],
-  }
-  return colors[props.tile.value] || ['white', 'black']
+  return TILE_COLORS[props.tile.value] || ['white', 'black']
 })
 
 const hasGlow = computed(() => props.tile.value >= 64)
@@ -45,23 +40,19 @@ const hasGlow = computed(() => props.tile.value >= 64)
 
 <template>
   <div
-      :class="[
-      valueClass,
+    :class="[
       digitClass,
       { 'tile-spawn': props.tile.justSpawned, 'tile-merge': props.tile.justMerged },
     ]"
-      :data-value="props.tile.value"
-      :style="{
-      'background-color': tileColor[0],
-      'color': tileColor[1],
-      'box-shadow': hasGlow ? `0 0 10px 0px ${tileColor[0]}` : 'none',
+    :data-value="props.tile.value"
+    :style="{
+      backgroundColor: tileColor[0],
+      color: tileColor[1],
+      boxShadow: hasGlow ? `0 0 10px 0px ${tileColor[0]}` : 'none',
     }"
-      class="tile"
+    class="tile"
   >
-    <div
-        :class="{ 'tile-border': props.tile.value }"
-        class="tile-inner"
-    >
+    <div class="tile-inner tile-border">
       <span class="tile-text">{{ props.tile.value }}</span>
     </div>
   </div>
@@ -74,13 +65,17 @@ const hasGlow = computed(() => props.tile.value >= 64)
   left: 0;
   width: var(--cell);
   height: var(--cell);
+  transform: translate(
+    calc(var(--gap) + var(--tile-col, 0) * (var(--cell) + var(--gap))),
+    calc(var(--gap) + var(--tile-row, 0) * (var(--cell) + var(--gap)))
+  );
   border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
   line-height: 1;
-  transition: transform 100ms ease-in-out;
+  transition: transform 180ms ease-in-out;
   will-change: transform;
 }
 
@@ -104,11 +99,11 @@ const hasGlow = computed(() => props.tile.value >= 64)
 }
 
 .tile-spawn .tile-inner {
-  animation: pop-in 180ms ease-out;
+  animation: pop-in 260ms ease-out;
 }
 
 .tile-merge .tile-inner {
-  animation: pop-merge 200ms ease-out;
+  animation: pop-merge 300ms ease-out;
 }
 
 @keyframes pop-in {

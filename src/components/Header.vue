@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import {computed} from 'vue'
-
 const props = defineProps<{
   score: number
   best: number
@@ -9,16 +7,13 @@ const props = defineProps<{
 const emit = defineEmits<{
   newGame: []
 }>()
-
-// Smooth score transition
-const displayScore = computed(() => props.score)
 </script>
 
 <template>
   <header class="header">
     <div class="score">
       <div class="score-display">
-        {{ displayScore }}
+        {{ props.score }}
       </div>
       <div class="score-label">
         Score

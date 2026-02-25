@@ -1,5 +1,4 @@
-import type {Direction, GameSnapshot, Tile} from './types'
-import type {GameState} from './state'
+import type {Direction, GameState, Tile} from './types'
 
 export type Rng = () => number
 
@@ -31,18 +30,6 @@ export function createNewGame(size: number, best: number, rng: Rng): GameState {
     state = spawnRandomTile(state, rng)
     state = spawnRandomTile(state, rng)
     return state
-}
-
-export function toSnapshot(state: GameState): GameSnapshot {
-    return {
-        size: state.size,
-        score: state.score,
-        best: state.best,
-        status: state.status,
-        keepPlaying: state.keepPlaying,
-        nextTileId: state.nextTileId,
-        tiles: state.tiles.map((t) => ({id: t.id, value: t.value, row: t.row, col: t.col})),
-    }
 }
 
 export function setKeepPlaying(state: GameState, keepPlaying: boolean): GameState {
@@ -97,8 +84,6 @@ export function move(state: GameState, direction: Direction, rng: Rng): GameStat
                 prev = mergedTile
                 prevMerged = true
 
-                if (t.row !== prev.row || t.col !== prev.col) moved = true
-                // If the previous tile moved earlier in this line, we already counted moved below.
                 moved = true
                 continue
             }

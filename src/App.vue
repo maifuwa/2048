@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import Game2048 from './components/Game2048/Game2048.vue'
+import Game from './components/Game.vue'
 </script>
 
 <template>
   <main class="app">
-    <Game2048/>
+    <Game/>
   </main>
 </template>
 

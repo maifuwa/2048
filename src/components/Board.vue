@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import {onMounted, onUnmounted, shallowRef, useTemplateRef} from 'vue'
-import type {Tile} from '@/game/types.ts'
-import TileView from './TileView.vue'
+import {onMounted, onUnmounted, useTemplateRef} from 'vue'
+import type {Tile} from '@/game/types'
+import TileComponent from './Tile.vue'
 
 const props = defineProps<{
   size: number
@@ -9,8 +9,6 @@ const props = defineProps<{
 }>()
 
 const boardEl = useTemplateRef<HTMLDivElement>('boardEl')
-
-const metrics = shallowRef({cell: 130, gap: 16})
 let ro: ResizeObserver | null = null
 
 function clamp(n: number, min: number, max: number) {
@@ -36,14 +34,13 @@ function readMetrics() {
 
   boardEl.value.style.setProperty('--cell', `${cellPx}px`)
   boardEl.value.style.setProperty('--gap', `${gapPx}px`)
-  metrics.value = {cell: cellPx, gap: gapPx}
 }
 
 function tileStyle(t: Tile) {
-  const {cell, gap} = metrics.value
-  const x = gap + t.col * (cell + gap)
-  const y = gap + t.row * (cell + gap)
-  return {transform: `translate(${x}px, ${y}px)`}
+  return {
+    '--tile-col': String(t.col),
+    '--tile-row': String(t.row),
+  }
 }
 
 onMounted(() => {
@@ -67,7 +64,7 @@ onUnmounted(() => {
     </div>
 
     <div class="tile-layer">
-      <TileView v-for="t in props.tiles" :key="t.id" :style="tileStyle(t)" :tile="t"/>
+      <TileComponent v-for="t in props.tiles" :key="t.id" :style="tileStyle(t)" :tile="t"/>
     </div>
   </div>
 </template>
