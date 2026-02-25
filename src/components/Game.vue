@@ -7,11 +7,6 @@ import StatusOverlay from './StatusOverlay.vue'
 
 const {
   state,
-  tiles,
-  score,
-  best,
-  status,
-  keepPlayingEnabled,
   move,
   keepPlaying,
   newGame,
@@ -22,7 +17,7 @@ const {onPointerDown, onPointerUp, onPointerCancel} = useSwipe({onSwipe: move})
 
 <template>
   <section class="game">
-    <Header :best="best" :score="score" @new-game="newGame"/>
+    <Header :best="state.best" :score="state.score" @new-game="newGame"/>
 
     <div
       aria-label="2048 game board"
@@ -32,10 +27,10 @@ const {onPointerDown, onPointerUp, onPointerCancel} = useSwipe({onSwipe: move})
       @pointerdown="onPointerDown"
       @pointerup="onPointerUp"
     >
-      <Board :size="state.size" :tiles="tiles"/>
+      <Board :size="state.size" :tiles="state.tiles"/>
       <StatusOverlay
-        :keep-playing-enabled="keepPlayingEnabled"
-        :status="status"
+        :keep-playing-enabled="state.keepPlaying"
+        :status="state.status"
         @keep-playing="keepPlaying"
         @new-game="newGame"
       />

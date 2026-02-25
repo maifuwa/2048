@@ -23,7 +23,7 @@ const emit = defineEmits<{
     <div class="actions">
       <div class="best-box">
         <div class="best-value">
-          {{ best }}
+          {{ props.best }}
         </div>
         <div class="best-label">
           High Score

@@ -1,4 +1,4 @@
-import {computed, onMounted, onUnmounted, readonly, shallowRef, watch} from 'vue'
+import {onMounted, onUnmounted, readonly, shallowRef, watch} from 'vue'
 import {clearTransientFlags, createNewGame, move, setKeepPlaying} from '../game/engine'
 import type {Direction, GameState} from '../game/types'
 import {loadBestScore, saveBestScore} from '../game/storage'
@@ -23,14 +23,8 @@ export function useGame(options: UseGameOptions = {}) {
   const size = options.size ?? 4
   const rng = options.rng ?? Math.random
 
-  const state = shallowRef<GameState>(createNewGame(size, 0, rng))
+  const state = shallowRef<GameState>(createNewGame(size, loadBestScore(), rng))
   let clearFlagsRaf: number | null = null
-
-  const tiles = computed(() => state.value.tiles)
-  const score = computed(() => state.value.score)
-  const best = computed(() => state.value.best)
-  const status = computed(() => state.value.status)
-  const keepPlayingEnabled = computed(() => state.value.keepPlaying)
 
   function scheduleClearFlags() {
     if (clearFlagsRaf != null) cancelAnimationFrame(clearFlagsRaf)
@@ -64,8 +58,6 @@ export function useGame(options: UseGameOptions = {}) {
   }
 
   onMounted(() => {
-    const bestScore = loadBestScore()
-    state.value = createNewGame(size, bestScore, rng, state.value.nextTileId)
     window.addEventListener('keydown', handleKeydown, {passive: false})
   })
 
@@ -74,15 +66,10 @@ export function useGame(options: UseGameOptions = {}) {
     if (clearFlagsRaf != null) cancelAnimationFrame(clearFlagsRaf)
   })
 
-  watch(best, (nextBest) => saveBestScore(nextBest), {flush: 'post'})
+  watch(() => state.value.best, (nextBest) => saveBestScore(nextBest), {flush: 'post'})
 
   return {
     state: readonly(state),
-    tiles,
-    score,
-    best,
-    status,
-    keepPlayingEnabled,
     newGame,
     keepPlaying,
     move: doMove,
